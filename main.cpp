@@ -1,10 +1,9 @@
 #include <SFML/Graphics.hpp>
 #include <iostream>
 #include <stdlib.h>
-#include <chrono>
-#include "gamegui.h"
-#include "game.h"
-#include "presets.h"
+#include "gamegui.hpp"
+#include "game.hpp"
+#include "presets.hpp"
 
 int main(int argc, char const *argv[])
 {
@@ -182,7 +181,6 @@ int main(int argc, char const *argv[])
         {
             gof.NextGeneration();
             gameGui.Update(gof.currentGameState);
-            // Calcular siguiente async
             clock.restart();
         }
 
