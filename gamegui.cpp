@@ -1,5 +1,5 @@
 
-#include "gamegui.h"
+#include "gamegui.hpp"
 
 GameGui::GameGui(int rows, int cols, int sideLength)
 {

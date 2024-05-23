@@ -10,7 +10,7 @@ gamegui.o: gamegui.cpp
 game.o: game.cpp
 	g++ -c game.cpp
 
-presets.o: presets.cpp presets.h
+presets.o: presets.cpp presets.hpp
 	g++ -c presets.cpp
 
 clean:

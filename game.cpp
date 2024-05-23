@@ -1,5 +1,5 @@
 
-#include "game.h"
+#include "game.hpp"
 
 GameOfLife::GameOfLife(int rows, int cols)
     : mGameRows(rows), mGameCols(cols)
