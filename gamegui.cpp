@@ -1,21 +1,21 @@
 
 #include "gamegui.hpp"
 
-GameGui::GameGui(int rows, int cols, int sideLength)
+GameGui::GameGui(sf::Vector2u boardSize, sf::Vector2u displacement, int cellLength)
 {
     mVertices.setPrimitiveType(sf::Quads);
-    mVertices.resize(rows * cols * 4);
+    mVertices.resize(boardSize.x * boardSize.y * 4);
 
-    for (int i = 0; i < cols; i++)
+    for (int i = 0; i < boardSize.x; i++)
     {
-        for (int j = 0; j < rows; j++)
+        for (int j = 0; j < boardSize.y; j++)
         {
-            sf::Vertex* quad = &mVertices[(i + j * cols) * 4];
+            sf::Vertex* quad = &mVertices[(i + j * boardSize.x) * 4];
 
-            quad[0].position = sf::Vector2f(i * sideLength, j * sideLength);
-            quad[1].position = sf::Vector2f((i + 1) * sideLength, j * sideLength);
-            quad[2].position = sf::Vector2f((i + 1) * sideLength, (j + 1) * sideLength);
-            quad[3].position = sf::Vector2f(i * sideLength, (j + 1) * sideLength);
+            quad[0].position = sf::Vector2f(i * cellLength + displacement.x, j * cellLength + displacement.y);
+            quad[1].position = sf::Vector2f((i + 1) * cellLength + displacement.x, j * cellLength + displacement.y);
+            quad[2].position = sf::Vector2f((i + 1) * cellLength + displacement.x, (j + 1) * cellLength + displacement.y);
+            quad[3].position = sf::Vector2f(i * cellLength + displacement.x, (j + 1) * cellLength + displacement.y);
 
             quad[0].color = sf::Color::Black;
             quad[1].color = sf::Color::Black;
