@@ -5,6 +5,7 @@
 #include "gamegui.hpp"
 #include "game.hpp"
 #include "presets.hpp"
+#include "utils.hpp"
 
 int main(int argc, char const *argv[])
 {
@@ -18,27 +19,28 @@ int main(int argc, char const *argv[])
     // Window setup
 
     sf::VideoMode desktop = sf::VideoMode::getDesktopMode();
+    sf::Vector2u screenSize = sf::Vector2u(desktop.width, desktop.height);
 
-    int SQUARE_SIDE_LENGHT = std::max(desktop.width, desktop.height) / 50;
+    //TODO: pasar coasas de aqui a sf:vector
 
-    int horzontalTiles = desktop.width / SQUARE_SIDE_LENGHT;
-    int verticalTiles = desktop.height / SQUARE_SIDE_LENGHT;
+    int SQUARE_SIDE_LENGHT = std::max(desktop.width, desktop.height) / 100;
+
+    //SQUARE_SIDE_LENGHT = 130;
+
+    sf::Vector2u tiles = sf::Vector2u(desktop.width / SQUARE_SIDE_LENGHT, desktop.height / SQUARE_SIDE_LENGHT);
+
     int horizontalRemainder = desktop.width % SQUARE_SIDE_LENGHT;
     int verticalRemainder = desktop.height % SQUARE_SIDE_LENGHT;
-    int xDisplacement = horizontalRemainder / 2;
-    int yDisplacement = verticalRemainder / 2;
+
+    sf::Vector2u displacement = sf::Vector2u(horizontalRemainder / 2, verticalRemainder / 2);
 
     sf::RenderWindow window(desktop, "Game of Life", sf::Style::Fullscreen);
     window.setFramerateLimit(30);
 
     // Game data
 
-    GameGui gameGui(
-        sf::Vector2u(horzontalTiles, verticalTiles),
-        sf::Vector2u(xDisplacement, yDisplacement),
-        SQUARE_SIDE_LENGHT
-    );
-    GameOfLife gof(verticalTiles, horzontalTiles);
+    GameGui gameGui(tiles, displacement, SQUARE_SIDE_LENGHT);
+    GameOfLife gof(tiles.y, tiles.x);
     sf::Clock clock;
     sf::Time delta = sf::milliseconds(50);
     float randomFactor = 0.5f;
@@ -115,11 +117,11 @@ int main(int argc, char const *argv[])
                 }
             }
 
-            if (event.type == sf::Event::MouseButtonReleased)
+            if (event.type == sf::Event::MouseButtonReleased && isValidMousePosition(event.mouseButton, screenSize, displacement))
             {
                 gamePaused = true;
-                int xCell = (event.mouseButton.x - xDisplacement) / SQUARE_SIDE_LENGHT;
-                int yCell = (event.mouseButton.y - yDisplacement) / SQUARE_SIDE_LENGHT;
+                int xCell = (event.mouseButton.x - displacement.x) / SQUARE_SIDE_LENGHT;
+                int yCell = (event.mouseButton.y - displacement.y) / SQUARE_SIDE_LENGHT;
 
                 std::cout << xCell << "-" << yCell << std::endl;
 
