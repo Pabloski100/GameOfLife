@@ -1,84 +1,38 @@
 #include <SFML/Graphics.hpp>
 #include <iostream>
 #include <stdlib.h>
+#include <algorithm>
 #include "gamegui.hpp"
 #include "game.hpp"
 #include "presets.hpp"
+#include "utils.hpp"
 
 int main(int argc, char const *argv[])
 {
 
     // Default constants
 
-    int WINDOW_WIDTH = 1800;
-    int WINDOW_HEIGHT = 900;
-    int SQUARE_SIDE_LENGHT = 20;
     std::string loadPath = "";
     arma::umat loadedState;
     bool succesfullLoad = false;
 
-    // Argument processing
-
-    if (argc == 3)
-    {
-        loadPath = argv[1];
-        SQUARE_SIDE_LENGHT = atoi(argv[2]);
-        succesfullLoad = loadedState.load(loadPath, arma::arma_ascii);
-        WINDOW_WIDTH = SQUARE_SIDE_LENGHT * loadedState.n_cols;
-        WINDOW_HEIGHT = SQUARE_SIDE_LENGHT * loadedState.n_rows;
-    }
-    else if (argc == 4)
-    {
-        WINDOW_WIDTH = atoi(argv[1]);
-        WINDOW_HEIGHT = atoi(argv[2]);
-        SQUARE_SIDE_LENGHT = atoi(argv[3]);
-
-        if (!(WINDOW_WIDTH && WINDOW_HEIGHT && SQUARE_SIDE_LENGHT))
-        {
-            std::cout << "Invalid arguments\n";
-            return 0;
-        }
-    }
-
-    // Checks
-
-    if (WINDOW_WIDTH > sf::VideoMode::getDesktopMode().width || 
-        WINDOW_HEIGHT > sf::VideoMode::getDesktopMode().height)
-    {
-        std::cout << "Window dimensions too big\n";
-        return 0;
-    }
-
-    if (WINDOW_WIDTH < 300 || WINDOW_HEIGHT < 300)
-    {
-        std::cout << "Window dimensions too small\n";
-        return 0;
-    }
-
-    if (WINDOW_WIDTH % SQUARE_SIDE_LENGHT != 0 ||
-        WINDOW_HEIGHT % SQUARE_SIDE_LENGHT != 0)
-    {
-        std::cout << "Invalid square side lenght\n";
-        return 0;
-    }
-
     // Window setup
 
-    int horzontalTiles = WINDOW_WIDTH / SQUARE_SIDE_LENGHT;
-    int verticalTiles = WINDOW_HEIGHT / SQUARE_SIDE_LENGHT;
+    sf::VideoMode desktop = sf::VideoMode::getDesktopMode();
+    sf::Vector2u screenSize = sf::Vector2u(desktop.width, desktop.height);
+    int squareSideLenght = std::max(desktop.width, desktop.height) / 100;
+    sf::Vector2u tiles = sf::Vector2u(desktop.width / squareSideLenght, desktop.height / squareSideLenght);
+    int horizontalRemainder = desktop.width % squareSideLenght;
+    int verticalRemainder = desktop.height % squareSideLenght;
+    sf::Vector2u displacement = sf::Vector2u(horizontalRemainder / 2, verticalRemainder / 2);
 
-
-    sf::RenderWindow window(sf::VideoMode(
-        WINDOW_WIDTH, WINDOW_HEIGHT
-    ), "Game of Life", sf::Style::Titlebar | sf::Style::Close);
-
+    sf::RenderWindow window(desktop, "Game of Life", sf::Style::Fullscreen);
     window.setFramerateLimit(30);
-    window.setPosition(sf::Vector2i(0, 0));
 
     // Game data
 
-    GameGui gameGui(verticalTiles, horzontalTiles, SQUARE_SIDE_LENGHT);
-    GameOfLife gof(verticalTiles, horzontalTiles);
+    GameGui gameGui(tiles, displacement, squareSideLenght);
+    GameOfLife gof(tiles.y, tiles.x);
     sf::Clock clock;
     sf::Time delta = sf::milliseconds(50);
     float randomFactor = 0.5f;
@@ -155,11 +109,13 @@ int main(int argc, char const *argv[])
                 }
             }
 
-            if (event.type == sf::Event::MouseButtonReleased)
+            if (event.type == sf::Event::MouseButtonReleased && isValidMousePosition(event.mouseButton, screenSize, displacement))
             {
                 gamePaused = true;
-                int xCell = event.mouseButton.x / SQUARE_SIDE_LENGHT;
-                int yCell = event.mouseButton.y / SQUARE_SIDE_LENGHT;
+                int xCell = (event.mouseButton.x - displacement.x) / squareSideLenght;
+                int yCell = (event.mouseButton.y - displacement.y) / squareSideLenght;
+
+                std::cout << xCell << "-" << yCell << std::endl;
 
                 switch (event.mouseButton.button)
                 {
