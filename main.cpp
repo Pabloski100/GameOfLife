@@ -20,18 +20,10 @@ int main(int argc, char const *argv[])
 
     sf::VideoMode desktop = sf::VideoMode::getDesktopMode();
     sf::Vector2u screenSize = sf::Vector2u(desktop.width, desktop.height);
-
-    //TODO: pasar coasas de aqui a sf:vector
-
-    int SQUARE_SIDE_LENGHT = std::max(desktop.width, desktop.height) / 100;
-
-    //SQUARE_SIDE_LENGHT = 130;
-
-    sf::Vector2u tiles = sf::Vector2u(desktop.width / SQUARE_SIDE_LENGHT, desktop.height / SQUARE_SIDE_LENGHT);
-
-    int horizontalRemainder = desktop.width % SQUARE_SIDE_LENGHT;
-    int verticalRemainder = desktop.height % SQUARE_SIDE_LENGHT;
-
+    int squareSideLenght = std::max(desktop.width, desktop.height) / 100;
+    sf::Vector2u tiles = sf::Vector2u(desktop.width / squareSideLenght, desktop.height / squareSideLenght);
+    int horizontalRemainder = desktop.width % squareSideLenght;
+    int verticalRemainder = desktop.height % squareSideLenght;
     sf::Vector2u displacement = sf::Vector2u(horizontalRemainder / 2, verticalRemainder / 2);
 
     sf::RenderWindow window(desktop, "Game of Life", sf::Style::Fullscreen);
@@ -39,7 +31,7 @@ int main(int argc, char const *argv[])
 
     // Game data
 
-    GameGui gameGui(tiles, displacement, SQUARE_SIDE_LENGHT);
+    GameGui gameGui(tiles, displacement, squareSideLenght);
     GameOfLife gof(tiles.y, tiles.x);
     sf::Clock clock;
     sf::Time delta = sf::milliseconds(50);
@@ -120,8 +112,8 @@ int main(int argc, char const *argv[])
             if (event.type == sf::Event::MouseButtonReleased && isValidMousePosition(event.mouseButton, screenSize, displacement))
             {
                 gamePaused = true;
-                int xCell = (event.mouseButton.x - displacement.x) / SQUARE_SIDE_LENGHT;
-                int yCell = (event.mouseButton.y - displacement.y) / SQUARE_SIDE_LENGHT;
+                int xCell = (event.mouseButton.x - displacement.x) / squareSideLenght;
+                int yCell = (event.mouseButton.y - displacement.y) / squareSideLenght;
 
                 std::cout << xCell << "-" << yCell << std::endl;
 
