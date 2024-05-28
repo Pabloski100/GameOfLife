@@ -1,17 +1,5 @@
 #include "presets.hpp"
 
-arma::umat rotate(arma::umat& mat)
-{
-    arma::umat rotated(mat.n_cols, mat.n_rows);
-
-    for (int i = 0; i < mat.n_rows; i++)
-    {
-        rotated.col(i) = mat.row(mat.n_rows - i - 1).as_col();
-    }
-    
-    return rotated;
-}
-
 arma::umat glider = {
     {0, 0, 0, 0, 0},
     {0, 0, 1, 0, 0},

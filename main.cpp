@@ -115,8 +115,6 @@ int main(int argc, char const *argv[])
                 int xCell = (event.mouseButton.x - displacement.x) / squareSideLenght;
                 int yCell = (event.mouseButton.y - displacement.y) / squareSideLenght;
 
-                std::cout << xCell << "-" << yCell << std::endl;
-
                 switch (event.mouseButton.button)
                 {
                 case sf::Mouse::Left:
