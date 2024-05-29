@@ -9,13 +9,14 @@
 
 int main(int argc, char const *argv[])
 {
+    // Check arguments
 
-    // Default constants
-
-    std::string loadPath = "";
-    arma::umat loadedState;
-    bool succesfullLoad = false;
-
+    if (argc < 2)
+    {
+        std::cout << "ERROR: game name missing" << std::endl;
+        return 0;
+    }
+    
     // Window setup
 
     sf::VideoMode desktop = sf::VideoMode::getDesktopMode();
@@ -26,8 +27,18 @@ int main(int argc, char const *argv[])
     int verticalRemainder = desktop.height % squareSideLenght;
     sf::Vector2u displacement = sf::Vector2u(horizontalRemainder / 2, verticalRemainder / 2);
 
+    // Window
+
     sf::RenderWindow window(desktop, "Game of Life", sf::Style::Fullscreen);
     window.setFramerateLimit(30);
+
+    // Load saved game (if exists)
+
+    std::string gameName(argv[1]);
+
+
+    arma::umat loadedState;
+    bool succesfullLoad = false;
 
     // Game data
 
@@ -72,17 +83,9 @@ int main(int argc, char const *argv[])
                     break;
                 case sf::Keyboard::P:
                     gamePaused = !gamePaused;
-                    if (gamePaused)
-                    {
-                        window.setTitle("Game of Life - PAUSED");
-                    } else
-                    {
-                        window.setTitle("Game of Life");
-                    }                    
                     break;
                 case sf::Keyboard::Space:
                     gamePaused = true;
-                    window.setTitle("Game of Life - PAUSED");
                     gof.NextGeneration();
                     gameGui.Update(gof.currentGameState);
                     break;
@@ -92,11 +95,10 @@ int main(int argc, char const *argv[])
                     break;
                 case sf::Keyboard::S:
                     gamePaused = true;
-                    gof.Save("./savetest.txt");
+                    gof.Save(gameName.append(".txt"));
                     break;
                 case sf::Keyboard::L:
                     gamePaused = true;
-                    window.setTitle("Game of Life - PAUSED");
                     gof.currentGameState = loadedState;
                     gameGui.Update(loadedState);
                     break;
