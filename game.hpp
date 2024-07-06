@@ -12,6 +12,7 @@ private:
 public:
     arma::umat currentGameState;
     GameOfLife(int rows, int cols);
+    GameOfLife(const std::string& filePath);
     ~GameOfLife();
     void NextGeneration();
     void FlipCell(int row, int col);
@@ -19,5 +20,4 @@ public:
     void RandomizeCells(float aliveProbability);
     void ClearCells();
     bool Save(const std::string& filePath);
-    bool Load(const std::string& filePath);
 };

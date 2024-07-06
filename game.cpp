@@ -7,6 +7,22 @@ GameOfLife::GameOfLife(int rows, int cols)
     currentGameState = arma::umat(rows, cols, arma::fill::zeros);
 }
 
+GameOfLife::GameOfLife(const std::string& filePath)
+{
+    arma::umat temp;
+    bool ok = temp.load(filePath, arma::arma_ascii);
+    if (ok)
+    {
+        currentGameState = temp;
+        mGameRows = temp.n_rows;
+        mGameCols = temp.n_cols;
+    }
+    else
+    {
+        throw "Failed to load GameOfLife file";
+    }
+}
+
 GameOfLife::~GameOfLife()
 {
 }
@@ -77,18 +93,5 @@ void GameOfLife::ClearCells()
 bool GameOfLife::Save(const std::string& filePath)
 {
     bool ok = currentGameState.save(filePath, arma::arma_ascii);
-    return ok;
-};
-
-bool GameOfLife::Load(const std::string& filePath)
-{
-    arma::umat temp;
-    bool ok = temp.load(filePath, arma::arma_ascii);
-    if (ok)
-    {
-        currentGameState = temp;
-        mGameRows = temp.n_rows;
-        mGameCols = temp.n_cols;
-    }
     return ok;
 };

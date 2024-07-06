@@ -16,6 +16,14 @@ int main(int argc, char const *argv[])
         std::cout << "ERROR: game name missing" << std::endl;
         return 0;
     }
+
+    // Load saved game (if exists)
+
+    std::string gameName(argv[1]);
+
+
+    arma::umat loadedState;
+    bool succesfullLoad = false;
     
     // Window setup
 
@@ -31,14 +39,6 @@ int main(int argc, char const *argv[])
 
     sf::RenderWindow window(desktop, "Game of Life", sf::Style::Fullscreen);
     window.setFramerateLimit(30);
-
-    // Load saved game (if exists)
-
-    std::string gameName(argv[1]);
-
-
-    arma::umat loadedState;
-    bool succesfullLoad = false;
 
     // Game data
 
