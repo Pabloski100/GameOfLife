@@ -1,6 +1,4 @@
 #include <SFML/Graphics.hpp>
-#include <iostream>
-#include <stdlib.h>
 #include <algorithm>
 #include <filesystem>
 #include "gamegui.hpp"
@@ -40,22 +38,13 @@ int main(int argc, char const *argv[])
 
     if (gameLoaded)
     {
-        std::cout << "Loaded" << std::endl;
         tiles = sf::Vector2u(gof.GetCols(), gof.GetRows());
         squareSideLenght = std::min(desktop.width / tiles.x, desktop.height / tiles.y);
     } else
     {
-        std::cout << "Created" << std::endl;
         squareSideLenght = std::max(desktop.width, desktop.height) / 100;
         tiles = sf::Vector2u(desktop.width / squareSideLenght, desktop.height / squareSideLenght);
     }
-
-    std::cout << squareSideLenght << std::endl;
-    std::cout << tiles.x << " " << tiles.y << std::endl;
-    std::cout << desktop.width << " " << desktop.height << std::endl;
-
-
-    //return 0;
 
     int horizontalRemainder = desktop.width % squareSideLenght;
     int verticalRemainder = desktop.height % squareSideLenght;
