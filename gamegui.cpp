@@ -35,7 +35,7 @@ void GameGui::draw(sf::RenderTarget& target, sf::RenderStates states) const
     target.draw(mVertices, states);
 }
 
-void GameGui::Update(arma::umat& state)
+void GameGui::Update(const arma::umat& state)
 {
     for (int i = 0; i < state.n_cols; i++)
     {
@@ -60,7 +60,7 @@ void GameGui::Update(arma::umat& state)
     }
 }
 
-void GameGui::UpdateCell(int row, int col, arma::umat& state)
+void GameGui::UpdateCell(int row, int col, const arma::umat& state)
 {
     sf::Vertex* quad = &mVertices[(col + row * state.n_cols) * 4];
 

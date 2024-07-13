@@ -4,7 +4,7 @@
 GameOfLife::GameOfLife(int rows, int cols)
     : mGameRows(rows), mGameCols(cols)
 {
-    currentGameState = arma::umat(rows, cols, arma::fill::zeros);
+    mCurrentGameState = arma::umat(rows, cols, arma::fill::zeros);
 }
 
 GameOfLife::GameOfLife(const std::string& filePath)
@@ -13,7 +13,7 @@ GameOfLife::GameOfLife(const std::string& filePath)
     bool ok = temp.load(filePath, arma::arma_ascii);
     if (ok)
     {
-        currentGameState = temp;
+        mCurrentGameState = temp;
         mGameRows = temp.n_rows;
         mGameCols = temp.n_cols;
     }
@@ -23,8 +23,28 @@ GameOfLife::GameOfLife(const std::string& filePath)
     }
 }
 
+GameOfLife::GameOfLife()
+    : mGameRows(0), mGameCols(0), mCurrentGameState(arma::umat(0, 0))
+{
+}
+
 GameOfLife::~GameOfLife()
 {
+}
+
+const arma::umat& GameOfLife::GetGameState()
+{
+    return mCurrentGameState;
+}
+
+int GameOfLife::GetRows()
+{
+    return mGameRows;
+}
+
+int GameOfLife::GetCols()
+{
+    return mGameCols;
 }
 
 const arma::umat GameOfLife::mKernel = arma::umat(
@@ -63,18 +83,18 @@ arma::umat GameOfLife::NextState(arma::umat& gameState)
 
 void GameOfLife::NextGeneration()
 {
-    currentGameState = NextState(currentGameState);
+    mCurrentGameState = NextState(mCurrentGameState);
 };
 
 void GameOfLife::FlipCell(int row, int col)
 {   
-    currentGameState(row, col) = !currentGameState(row, col);
+    mCurrentGameState(row, col) = !mCurrentGameState(row, col);
 };
 
 bool GameOfLife::SetCells(int row, int col, const arma::umat& cellMatrix)
 {
     if (row + cellMatrix.n_rows - 1 >= mGameRows || col + cellMatrix.n_cols - 1 >= mGameCols) { return false; }
-    currentGameState.submat(row, col, row + cellMatrix.n_rows - 1, col + cellMatrix.n_cols - 1) = cellMatrix;
+    mCurrentGameState.submat(row, col, row + cellMatrix.n_rows - 1, col + cellMatrix.n_cols - 1) = cellMatrix;
     return true;
 };
 
@@ -82,16 +102,16 @@ void GameOfLife::RandomizeCells(float aliveProbability)
 {
     arma::arma_rng::set_seed_random();
     arma::mat randMatrix = arma::randu(mGameRows, mGameCols);
-    currentGameState = randMatrix < aliveProbability;
+    mCurrentGameState = randMatrix < aliveProbability;
 };
 
 void GameOfLife::ClearCells()
 {
-    currentGameState = arma::umat(mGameRows, mGameCols, arma::fill::zeros);
+    mCurrentGameState = arma::umat(mGameRows, mGameCols, arma::fill::zeros);
 };
 
 bool GameOfLife::Save(const std::string& filePath)
 {
-    bool ok = currentGameState.save(filePath, arma::arma_ascii);
+    bool ok = mCurrentGameState.save(filePath, arma::arma_ascii);
     return ok;
 };

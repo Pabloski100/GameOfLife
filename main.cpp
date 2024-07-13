@@ -2,6 +2,7 @@
 #include <iostream>
 #include <stdlib.h>
 #include <algorithm>
+#include <filesystem>
 #include "gamegui.hpp"
 #include "game.hpp"
 #include "presets.hpp"
@@ -19,43 +20,64 @@ int main(int argc, char const *argv[])
 
     // Load saved game (if exists)
 
-    std::string gameName(argv[1]);
+    std::string gameFileName(argv[1]);
+    GameOfLife gof;
+    bool gameLoaded = false;
 
-
-    arma::umat loadedState;
-    bool succesfullLoad = false;
+    if (std::filesystem::exists(gameFileName))
+    {
+        gof = GameOfLife(gameFileName);
+        gameLoaded = true;
+    }
     
     // Window setup
 
     sf::VideoMode desktop = sf::VideoMode::getDesktopMode();
     sf::Vector2u screenSize = sf::Vector2u(desktop.width, desktop.height);
-    int squareSideLenght = std::max(desktop.width, desktop.height) / 100;
-    sf::Vector2u tiles = sf::Vector2u(desktop.width / squareSideLenght, desktop.height / squareSideLenght);
+
+    int squareSideLenght;
+    sf::Vector2u tiles;
+
+    if (gameLoaded)
+    {
+        std::cout << "Loaded" << std::endl;
+        tiles = sf::Vector2u(gof.GetCols(), gof.GetRows());
+        squareSideLenght = std::min(desktop.width / tiles.x, desktop.height / tiles.y);
+    } else
+    {
+        std::cout << "Created" << std::endl;
+        squareSideLenght = std::max(desktop.width, desktop.height) / 100;
+        tiles = sf::Vector2u(desktop.width / squareSideLenght, desktop.height / squareSideLenght);
+    }
+
+    std::cout << squareSideLenght << std::endl;
+    std::cout << tiles.x << " " << tiles.y << std::endl;
+    std::cout << desktop.width << " " << desktop.height << std::endl;
+
+
+    //return 0;
+
     int horizontalRemainder = desktop.width % squareSideLenght;
     int verticalRemainder = desktop.height % squareSideLenght;
     sf::Vector2u displacement = sf::Vector2u(horizontalRemainder / 2, verticalRemainder / 2);
-
-    // Window
-
     sf::RenderWindow window(desktop, "Game of Life", sf::Style::Fullscreen);
     window.setFramerateLimit(30);
 
     // Game data
 
-    GameGui gameGui(tiles, displacement, squareSideLenght);
-    GameOfLife gof(tiles.y, tiles.x);
-    sf::Clock clock;
-    sf::Time delta = sf::milliseconds(50);
     float randomFactor = 0.5f;
     bool gamePaused = false;
     int selectedPreset = 0;
-
-    if (succesfullLoad)
-    {
-        gof.currentGameState = loadedState;
+    GameGui gameGui(tiles, displacement, squareSideLenght);
+    if (gameLoaded){
+        gameGui.Update(gof.GetGameState());
         gamePaused = true;
-        gameGui.Update(loadedState);
+    } else
+    {
+        gof = GameOfLife(tiles.y, tiles.x);
     }
+    sf::Clock clock;
+    sf::Time delta = sf::milliseconds(50);
     
     // Application loop
 
@@ -79,7 +101,7 @@ int main(int argc, char const *argv[])
                     break;
                 case sf::Keyboard::R:
                     gof.RandomizeCells(randomFactor);
-                    gameGui.Update(gof.currentGameState);
+                    gameGui.Update(gof.GetGameState());
                     break;
                 case sf::Keyboard::P:
                     gamePaused = !gamePaused;
@@ -87,20 +109,15 @@ int main(int argc, char const *argv[])
                 case sf::Keyboard::Space:
                     gamePaused = true;
                     gof.NextGeneration();
-                    gameGui.Update(gof.currentGameState);
+                    gameGui.Update(gof.GetGameState());
                     break;
                 case sf::Keyboard::C:
                     gof.ClearCells();
-                    gameGui.Update(gof.currentGameState);
+                    gameGui.Update(gof.GetGameState());
                     break;
                 case sf::Keyboard::S:
                     gamePaused = true;
-                    gof.Save(gameName.append(".txt"));
-                    break;
-                case sf::Keyboard::L:
-                    gamePaused = true;
-                    gof.currentGameState = loadedState;
-                    gameGui.Update(loadedState);
+                    gof.Save(gameFileName);
                     break;
                 default:
                     if (sf::Keyboard::Num0 <= event.key.code && event.key.code <= sf::Keyboard::Num9)
@@ -121,11 +138,11 @@ int main(int argc, char const *argv[])
                 {
                 case sf::Mouse::Left:
                     gof.FlipCell(yCell, xCell);
-                    gameGui.UpdateCell(yCell, xCell, gof.currentGameState);
+                    gameGui.UpdateCell(yCell, xCell, gof.GetGameState());
                     break;
                 case sf::Mouse::Right:
                     gof.SetCells(yCell, xCell, presets[selectedPreset]);
-                    gameGui.Update(gof.currentGameState);
+                    gameGui.Update(gof.GetGameState());
                     break;
                 default:
                     break;
@@ -136,7 +153,7 @@ int main(int argc, char const *argv[])
         if (!gamePaused && clock.getElapsedTime() > delta)
         {
             gof.NextGeneration();
-            gameGui.Update(gof.currentGameState);
+            gameGui.Update(gof.GetGameState());
             clock.restart();
         }
 
