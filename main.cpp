@@ -1,6 +1,7 @@
 #include <SFML/Graphics.hpp>
 #include <algorithm>
 #include <filesystem>
+#include <iostream>
 #include "gamegui.hpp"
 #include "game.hpp"
 #include "presets.hpp"
@@ -57,6 +58,8 @@ int main(int argc, char const *argv[])
     float randomFactor = 0.5f;
     bool gamePaused = false;
     int selectedPreset = 0;
+    sf::Clock clock;
+    sf::Time delta = sf::milliseconds(50);
     GameGui gameGui(tiles, displacement, squareSideLenght);
     if (gameLoaded){
         gameGui.Update(gof.GetGameState());
@@ -65,8 +68,6 @@ int main(int argc, char const *argv[])
     {
         gof = GameOfLife(tiles.y, tiles.x);
     }
-    sf::Clock clock;
-    sf::Time delta = sf::milliseconds(50);
     
     // Application loop
 
@@ -107,6 +108,18 @@ int main(int argc, char const *argv[])
                 case sf::Keyboard::S:
                     gamePaused = true;
                     gof.Save(gameFileName);
+                    break;
+                case sf::Keyboard::Down:
+                    delta = (delta < sf::milliseconds(250)) ? delta + sf::milliseconds(20) : delta;
+                    break;
+                case sf::Keyboard::Up:
+                    delta = (delta > sf::milliseconds(30)) ? delta - sf::milliseconds(20) : delta;
+                    break;
+                case sf::Keyboard::Left:
+                    randomFactor = (randomFactor > 0.15f) ? randomFactor - 0.1f : randomFactor;
+                    break;
+                case sf::Keyboard::Right:
+                    randomFactor = (randomFactor < 0.85f) ? randomFactor + 0.1f : randomFactor;
                     break;
                 default:
                     if (sf::Keyboard::Num0 <= event.key.code && event.key.code <= sf::Keyboard::Num9)
