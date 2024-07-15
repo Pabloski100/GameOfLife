@@ -43,7 +43,8 @@ int main(int argc, char const *argv[])
         squareSideLenght = std::min(desktop.width / tiles.x, desktop.height / tiles.y);
     } else
     {
-        squareSideLenght = std::max(desktop.width, desktop.height) / 100;
+        int gameSize = (argc > 2) ? std::stoi(argv[2]) : 100;
+        squareSideLenght = std::max(desktop.width, desktop.height) / gameSize;
         tiles = sf::Vector2u(desktop.width / squareSideLenght, desktop.height / squareSideLenght);
     }
 
