@@ -8,14 +8,12 @@ bool isValidMousePosition(sf::Event::MouseButtonEvent mouseEvent, sf::Vector2u s
     return validX && validY;
 }
 
-arma::umat rotate(arma::umat& mat)
+void rotate(arma::umat& mat)
 {
-    arma::umat rotated(mat.n_cols, mat.n_rows);
+    mat = arma::fliplr(arma::trans(mat));
+}
 
-    for (int i = 0; i < mat.n_rows; i++)
-    {
-        rotated.col(i) = mat.row(mat.n_rows - i - 1).as_col();
-    }
-    
-    return rotated;
+void mirror(arma::umat& mat)
+{
+    mat = arma::fliplr(mat);
 }

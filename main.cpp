@@ -109,6 +109,12 @@ int main(int argc, char const *argv[])
                     gamePaused = true;
                     gof.Save(gameFileName);
                     break;
+                case sf::Keyboard::T:
+                    rotate(presets[selectedPreset]);
+                    break;
+                case sf::Keyboard::M:
+                    mirror(presets[selectedPreset]);
+                    break;
                 case sf::Keyboard::Down:
                     delta = (delta < sf::milliseconds(250)) ? delta + sf::milliseconds(20) : delta;
                     break;

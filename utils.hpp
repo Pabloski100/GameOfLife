@@ -3,4 +3,5 @@
 #include <armadillo>
 
 bool isValidMousePosition(sf::Event::MouseButtonEvent mouseEvent, sf::Vector2u screenSize, sf::Vector2u displacement);
-arma::umat rotate(arma::umat& mat);
+void rotate(arma::umat& mat);
+void mirror(arma::umat& mat);
