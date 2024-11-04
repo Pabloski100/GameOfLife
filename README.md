@@ -19,7 +19,7 @@ Controls:
 * `Right mouse button`: place selected structure
 * `R`: randomize board
 * `P`: pause
-* `Espacio`: run one step
+* `Space bar`: run one step
 * `C`: clear board
 * `S`: save game
 * `T`: rotate selection
@@ -29,8 +29,8 @@ Controls:
 
 Console arguments:
 
-* `file.txt` (required): defines the name of the save file. If it exists the game tries to load it
-* `size` (optional): integer that defines board size. By default its 100. This arguments is ignores of the game is loaded
+* `file.txt` (required): defines the save file name. If it exists the game tries to load it
+* `size` (optional): integer that defines board size, 100 by default. This argument is ignored if the game is loaded
 * Examples:
   * ./main save.txt
   * ./main save.txt 200
