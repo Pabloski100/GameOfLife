@@ -1,6 +1,2 @@
 *.vscode
-*.o
-*.txt
-main
-obj/
 build/
